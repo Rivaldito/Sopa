@@ -9,7 +9,8 @@ import (
 )
 
 type Sopa struct {
-	Client *http.Client
+	Client       *http.Client
+	HTMLResponse *string
 }
 
 func Constructor() (*Sopa, error) {

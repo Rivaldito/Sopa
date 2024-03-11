@@ -1,6 +1,7 @@
 package sopa
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,18 +25,37 @@ func (sopa Sopa) PostAndSetCookie(u string, payload url.Values) {
 
 	sopa.Client.Jar.SetCookies(uParse, response.Cookies())
 
-	fmt.Println(sopa.Client.Jar)
-
 }
 
 func (sopa Sopa) Post(u string, payload url.Values) {
 
-	response, err := http.PostForm(u, payload)
+	response, err := sopa.Client.PostForm(u, payload)
 	if err != nil {
-		log.Panic(err)
+		fmt.Println(err)
 	}
 	defer response.Body.Close()
 
-	fmt.Println(response.Body)
+}
+
+func (sopa Sopa) PostUploadBinaryFile(u string, payload url.Values, upload []byte) {
+
+	reader := bytes.NewReader(upload)
+
+	request, err := http.NewRequest("POST", variables.URL_FW, reader)
+	if err != nil {
+		log.Panic(err)
+	}
+	request.Header.Set("Content-Type", "multipart/form-data")
+	request.Header.Set("Content-Type", "application/octet-stream")
+
+	rsp, err := sopa.Client.Do(request)
+	if err != nil {
+		log.Panic(err)
+	}
+	if rsp.StatusCode != http.StatusOK {
+		log.Printf("Request failed with response code: %d", rsp.StatusCode)
+	}
+
+	sopa.Client.Do(request)
 
 }
