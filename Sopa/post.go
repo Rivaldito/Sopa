@@ -1,11 +1,11 @@
 package sopa
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 
 	variables "github.com/rivaldito/sopa/Variables"
 )
@@ -39,13 +39,13 @@ func (sopa Sopa) Post(u string, payload url.Values) {
 
 func (sopa Sopa) PostUploadBinaryFile(u string, payload url.Values, upload []byte) {
 
-	reader := bytes.NewReader(upload)
+	//reader := bytes.NewReader(upload)
 
-	request, err := http.NewRequest("POST", variables.URL_FW, reader)
+	request, err := http.NewRequest("POST", variables.URL_FW, strings.NewReader(payload.Encode()))
 	if err != nil {
 		log.Panic(err)
 	}
-	request.Header.Set("Content-Type", "multipart/form-data")
+	//request.Header.Set("Content-Type", "multipart/form-data")
 	request.Header.Set("Content-Type", "application/octet-stream")
 
 	rsp, err := sopa.Client.Do(request)

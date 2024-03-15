@@ -21,8 +21,11 @@ func Constructor() (*Sopa, error) {
 	}
 
 	client := &http.Client{
-		Timeout: time.Duration(10) * time.Second,
+		Timeout: time.Duration(160) * time.Second,
 		Jar:     jar,
+		Transport: &http.Transport{
+			DisableCompression: true,
+		},
 	}
 
 	sopa := Sopa{
